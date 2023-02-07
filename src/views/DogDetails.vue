@@ -1,6 +1,9 @@
 <script>
 export default {
   name: "dogsDetails",
+  beforeRouteLeave() {
+    this.$store.dispatch("clearSearchedBreed");
+  },
 };
 </script>
 <template>

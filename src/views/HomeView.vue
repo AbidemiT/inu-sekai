@@ -1,95 +1,48 @@
-<script>
-export default {
-  name: "homeView",
-  data() {
-    return {
-      dogs: [],
-      fetchedDogs: false,
-      isLoading: false,
-      searchInput: "",
-      isDebounce: null,
-    };
-  },
-  created() {
-    this.isDebounce = this.debounce(this._searchBreed, 400);
-    this.fetchDogs();
-
-    if (this.dogs.length < 100) {
-      this.fetchAdditional();
-    }
-  },
-  methods: {
-    async fetchDogs() {
-      this.isLoading = true;
-
-      try {
-        const response = await fetch(
-          "https://dog.ceo/api/breeds/image/random/50"
-        );
-        const data = await response.json();
-
-        this.dogs = data.message;
-        this.isLoading = false;
-      } catch (error) {
-        console.log({ error });
-        this.isLoading = false;
-      }
-    },
-    async fetchAdditional() {
-      try {
-        const response = await fetch(
-          "https://dog.ceo/api/breeds/image/random/50"
-        );
-        const data = await response.json();
-
-        this.dogs = this.dogs.concat(data.message);
-      } catch (error) {
-        console.log({ error });
-      }
-    },
-    async _searchBreed() {
-      const url = `https://dog.ceo/api/breed/${this.searchInput}/images/random`;
-      console.log({ url });
-      try {
-        const response = await fetch(url);
-
-        // console.log({ response });
-        const data = await response.json();
-
-        console.log({ data });
-      } catch (error) {
-        console.log({ error });
-      }
-    },
-    debounce(functionName, time) {
-      var timer;
-
-      return function () {
-        clearTimeout(timer);
-
-        timer = setTimeout(() => {
-          functionName.apply(this, arguments);
-        }, time);
-      };
-    },
-  },
-};
-</script>
-
 <template>
   <main>
     <h1>Inu Sekai - Dogs World</h1>
-    <input name="searchBreed" id="searchBreed" v-model="searchInput" @keyup="isDebounce" />
-    <span class="loader" v-if="isLoading"></span>
-    <div class="dogs__cards" v-else>
-      <figure class="dog--image" v-for="(dog, index) in dogs" :key="`${dog}-${index}`">
-        <router-link :to="{ name: 'dogDetails', params: { id: `dogId-${index}` } }">
-          <img :src="dog" alt="Dog" loading="lazy" />
-        </router-link>
-      </figure>
-    </div>
+    <dog-search />
+    <span class="loader" v-if="isLoadingDogs"></span>
+    <dogs-searched-items :dogs="dogsByBreed" v-else-if="!isLoadingDogs && dogsByBreed.length !== 0" />
+    <dogs-items :dogs="dogs" v-else />
   </main>
 </template>
+
+<script>
+import { mapState } from "vuex";
+import { defineComponent } from "vue";
+import DogSearch from "../components/DogSearch.vue";
+import DogsItems from "../components/DogsItems.vue";
+import DogsSearchedItems from "../components/DogsSearchedItems.vue";
+
+export default defineComponent({
+  name: "homeView",
+  components: {
+    DogSearch,
+    DogsItems,
+    DogsSearchedItems,
+  },
+  data() {
+    return {
+      fetchedDogs: false,
+    };
+  },
+  computed: mapState({
+    dogs: (state) => state.dogs.dogs,
+    dogsByBreed: (state) => state.dogs.searchedBreeds,
+    isLoadingDogs: (state) => state.dogs.isLoadingDogs,
+  }),
+  created() {
+    if (this.dogs.length < 50) {
+      this.$store.dispatch("getAllDogs");
+    }
+
+    if (this.dogs.length > 49 && this.dogs.length < 100) {
+      this.$store.dispatch("fecthAdditionalDogs");
+    }
+  },
+});
+</script>
 
 <style lang="scss">
 main {
