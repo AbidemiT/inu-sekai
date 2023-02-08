@@ -1,0 +1,8 @@
+@mixin is-container {
+  max-width: 122.2rem;
+  margin: 0 auto;
+
+  @include media('<phone') {
+    padding: 0 4rem;
+  }
+}

@@ -1,5 +1,7 @@
 <template>
-  <input name="searchBreed" id="searchBreed" @input="onChangeDebounced" />
+  <div class="input-container">
+    <input name="searchBreed" id="searchBreed" @input="onChangeDebounced" placeholder="Search by dog's breed" />
+  </div>
 </template>
 
 <script>

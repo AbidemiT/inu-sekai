@@ -1,17 +1,29 @@
-<script>
-export default {
-  name: "dogsDetails",
-  beforeRouteLeave() {
-    this.$store.dispatch("clearSearchedBreed");
-  },
-};
-</script>
 <template>
-  <div class="">
-    <h1>{{ $route.params.id }} Details Page</h1>
+  <div class="dog-details">
+    <router-link :to="{ name: 'homeView' }">Back Home</router-link>
+    <p>{{ $route.params.id }} Details Page</p>
   </div>
 </template>
 
-<style>
+<script>
+import { mapState } from "vuex";
 
+export default {
+  name: "dogsDetails",
+  computed: {
+    ...mapState({
+      dogDetails: (state) => state.dogs.dogDetails,
+    }),
+  },
+  beforeRouteLeave() {
+    this.$store.dispatch("clearSearchedBreed");
+    this.$store.dispatch("searchStatusAction");
+  },
+};
+</script>
+
+<style>
+a {
+  color: red;
+}
 </style>

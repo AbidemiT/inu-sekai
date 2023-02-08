@@ -3,7 +3,10 @@ import dog from "../../helper/api/dog";
 const state = () => ({
   isLoadingDogs: false,
   dogs: [],
+  dogDetails: {},
   searchedBreeds: [],
+  searchStatus: false,
+  dogBreedQuery: "",
 });
 
 // getters
@@ -23,6 +26,14 @@ const actions = {
       console.log({ error });
     }
   },
+  async getDogDetails({ commit }) {
+    try {
+      const data = await dog.fetchDogdetails();
+      console.log({ data });
+    } catch (error) {
+      console.log({ error });
+    }
+  },
   async fecthAdditionalDogs({ commit }) {
     commit("setIsLoadingDogs", true);
     try {
@@ -37,6 +48,9 @@ const actions = {
   },
   async searchDogsByBreed({ commit }, query) {
     commit("setIsLoadingDogs", true);
+    commit("setSearchStatus", true);
+    commit("setDogBreedQuery", query);
+
     try {
       const data = await dog._searchBreed(query);
       const searchedBreed = data.message;
@@ -47,8 +61,24 @@ const actions = {
       commit("setIsLoadingDogs", false);
     }
   },
+  async searchDogsByBreedAdditionalTwenty({ commit }, query) {
+    commit("setSearchStatus", true);
+    console.log({ query });
+    try {
+      const data = await dog._searchBreed(query);
+      console.log({ data });
+      const searchedBreed = data.message;
+      commit("setSearchedBreedAdditionalTwenty", searchedBreed);
+    } catch (error) {
+      console.log({ error });
+      commit("setIsLoadingDogs", false);
+    }
+  },
   clearSearchedBreed({ commit }) {
     commit("setClearSearchedBreed");
+  },
+  searchStatusAction({ commit }) {
+    commit("setSearchStatus", false);
   },
 };
 
@@ -60,14 +90,25 @@ const mutations = {
   setAdditionalDogs(state, additionalDogs) {
     state.dogs = state.dogs.concat(additionalDogs);
   },
+
   setIsLoadingDogs(state, value) {
     state.isLoadingDogs = value;
   },
   setSearchedBreed(state, value) {
     state.searchedBreeds = value;
   },
+  setSearchedBreedAdditionalTwenty(state, value) {
+    state.searchedBreeds = state.searchedBreeds.concat(value);
+  },
   setClearSearchedBreed(state) {
     state.searchedBreeds = [];
+    state.dogBreedQuery = "";
+  },
+  setSearchStatus(state, value) {
+    state.searchStatus = value;
+  },
+  setDogBreedQuery(state, breed) {
+    state.dogBreedQuery = breed;
   },
 };
 

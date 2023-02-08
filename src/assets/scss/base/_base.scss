@@ -1,0 +1,134 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+html {
+
+  background: $color-light-red;
+  // color: $color-quarter-spanish-white;
+  font-size: calc(100vw / 1512 * 10);
+  line-height: 1;
+  height: 100%;
+
+  @include media('<phone') {
+    font-size: calc(100vw / 750 * 10);
+  }
+}
+
+body {
+  @extend %description-16;
+
+  font-family: $font-inter;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+h1 {
+  @extend %titles-36;
+  color: $color-red;
+}
+
+a {
+  color: inherit;
+  outline: none;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  color: inherit;
+  outline: none;
+  cursor: pointer;
+  border: none;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+  object-fit: cover;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+input {
+  outline: none;
+  border: none;
+}
+
+.loader {
+  width: 64px;
+  height: 64px;
+  position: relative;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10rem 0;
+}
+
+.loader:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 40px;
+  transform: rotate(45deg) translate(30%, 40%);
+  background: #ff9371;
+  box-shadow: 32px -34px 0 5px #ff3d00;
+  animation: slide 2s infinite ease-in-out alternate;
+}
+
+.loader:after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 40px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ff3d00;
+  transform: rotate(0deg);
+  transform-origin: 35px 145px;
+  animation: rotate 2s infinite ease-in-out;
+}
+
+@keyframes slide {
+
+  0%,
+  100% {
+    bottom: -35px;
+  }
+
+  25%,
+  75% {
+    bottom: -2px;
+  }
+
+  20%,
+  80% {
+    bottom: 2px;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-15deg);
+  }
+
+  25%,
+  75% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(25deg);
+  }
+}
